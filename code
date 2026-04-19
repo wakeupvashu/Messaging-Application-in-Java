@@ -1,0 +1,93 @@
+code:-
+
+import java.util.*;
+
+class User {
+    String username;
+    List<String> inbox = new ArrayList<>();
+
+    User(String username) {
+        this.username = username;
+    }
+
+    void receiveMessage(String from, String message) {
+        inbox.add("From " + from + ": " + message);
+    }
+
+    void showInbox() {
+        if (inbox.isEmpty()) {
+            System.out.println("Inbox is empty.");
+        } else {
+            System.out.println("Messages for " + username + ":");
+            for (String msg : inbox) {
+                System.out.println(msg);
+            }
+        }
+    }
+}
+
+public class MessagingApp {
+    static Map<String, User> users = new HashMap<>();
+    static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("\n--- Messaging App ---");
+            System.out.println("1. Register User");
+            System.out.println("2. Send Message");
+            System.out.println("3. Show Inbox");
+            System.out.println("4. Exit");
+            System.out.print("Choose option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1 -> registerUser();
+                case 2 -> sendMessage();
+                case 3 -> showInbox();
+                case 4 -> {
+                    System.out.println("Exiting...");
+                    return;
+                }
+                default -> System.out.println("Invalid choice!");
+            }
+        }
+    }
+
+    static void registerUser() {
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+        if (users.containsKey(username)) {
+            System.out.println("Username already exists!");
+        } else {
+            users.put(username, new User(username));
+            System.out.println("User registered successfully!");
+        }
+    }
+
+    static void sendMessage() {
+        System.out.print("From (username): ");
+        String from = scanner.nextLine();
+        System.out.print("To (username): ");
+        String to = scanner.nextLine();
+        System.out.print("Message: ");
+        String message = scanner.nextLine();
+
+        if (!users.containsKey(from) || !users.containsKey(to)) {
+            System.out.println("Invalid sender or receiver!");
+        } else {
+            users.get(to).receiveMessage(from, message);
+            System.out.println("Message sent!");
+        }
+    }
+
+    static void showInbox() {
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+        if (users.containsKey(username)) {
+            users.get(username).showInbox();
+        } else {
+            System.out.println("User not found!");
+        }
+    }
+}
